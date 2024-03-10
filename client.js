@@ -2,11 +2,7 @@ function getNominations() {
     console.log("Getting Nominations:");
     const baseURL = 'http://localhost:8080/getNominations';
 
-    const inputElement = document.getElementById('year').value;
-
-    const queryParams = {
-        year: inputElement
-    };
+    var queryParams = getQueryParameters();
 
     const queryString = Object.keys(queryParams)
         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
@@ -33,6 +29,52 @@ function getNominations() {
             // Handle errors
             console.error('There was a problem with the fetch operation:', error);
         });
+}
+
+function getQueryParametersMode1() {
+    const yearInput = document.getElementById('year').value;
+    const infoInput = document.getElementById('info').value;
+    const nomineeInput = document.getElementById('nominee').value;
+    const categoryInput = document.getElementById('category').value;
+    const wonInput = document.getElementById('won').value;
+
+    const queryParams = {
+        year: yearInput,
+        info: infoInput,
+        nominee: nomineeInput,
+        category: categoryInput,
+        won: wonInput
+    };
+
+    return queryParams;
+}
+
+function getQueryParametersMode2() {
+    const yearInput = document.getElementById('year').value;
+    const categoryInput = document.getElementById('category').value;
+    const nomInfo = document.getElementById('nomInfo').value;
+    const wonInput = document.getElementById('won').value;
+
+    const queryParams = {
+        year: yearInput,
+        nomInfo: nomInfo,
+        category: categoryInput,
+        won: wonInput
+    };
+
+    return queryParams;
+}
+
+function getQueryParameters() {
+    const nomInfo = document.getElementById('nomInfo');
+    console.log(nomInfo);
+    if (nomInfo.value === undefined || nomInfo.value == '') {
+        console.log("zone 1");
+        return getQueryParametersMode1(); // Input is empty
+    } else {
+        console.log("zone 2");
+        return getQueryParametersMode2(); // Input is not empty
+    }
 }
 
 function getNominees() {
