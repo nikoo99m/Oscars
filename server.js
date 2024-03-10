@@ -6,8 +6,14 @@ const path = require('path');
 app.use(express.static('public'));
 
 app.get('/getNominations', (req, res) => {
+    const category = req.query.category;
+    const year = req.query.year;
+
     var oscars = getOscars(res);
-    res.json(oscars);
+    var filter = filterNominations(oscars, year);
+    console.log(year);
+    console.log(filter.length);
+    res.json(filter);
 });
 
 app.get('/getNominations2', (request, response) => {
@@ -35,6 +41,11 @@ app.get('/', (req, res) => {
         res.send(data);
     });
 });
+
+function filterNominations(data, year) {
+    data.forEach(entry => console.log(entry));
+    return data.filter(x => x.Year.includes(year));
+}
 
 function getOscars() {
     const filePath = path.join(__dirname, 'oscars.json');
