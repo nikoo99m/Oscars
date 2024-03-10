@@ -6,12 +6,9 @@ const path = require('path');
 app.use(express.static('public'));
 
 app.get('/getNominations', (req, res) => {
-    const category = req.query.category;
-    const year = req.query.year;
-
     var oscars = getOscars(res);
-    var filter = filterNominations(oscars, year);
-    console.log(year);
+    var filter = filterNominations(oscars, req.query);
+    // console.log(year);
     console.log(filter.length);
     res.json(filter);
 });
@@ -42,9 +39,35 @@ app.get('/', (req, res) => {
     });
 });
 
-function filterNominations(data, year) {
-    data.forEach(entry => console.log(entry));
-    return data.filter(x => x.Year.includes(year));
+function filterNominations(data, query) {
+    console.log(query);
+    const category = query.category;
+    const year = query.year;
+    const info = query.info;
+    const nominee = query.nominee;
+    const nomInfo = query.nomInfo;
+    const won = query.won;
+
+
+    // data.forEach(entry => console.log(entry));
+    if (nomInfo === undefined || nomInfo.value === '') {
+        console.log("zone 1");
+        console.log(nomInfo);
+        return data.filter(x => x.Year.includes(year) &&
+            x.Category.includes(category) &&
+            x.Nominee.includes(nominee) &&
+            x.Info.includes(info) &&
+            ((won == 'both') || (won != 'both' && x.Won.includes(won))));
+    }
+    else {
+        console.log("zone 2");
+        console.log(nomInfo);
+        return data.filter(x => x.Year.includes(year) &&
+            x.Category.includes(category) &&
+            (x.Nominee.includes(nomInfo) ||
+                x.Info.includes(nomInfo)) &&
+            ((won == 'both') || (won != 'both' && x.Won.includes(won))));
+    }
 }
 
 function getOscars() {
