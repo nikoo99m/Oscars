@@ -9,7 +9,6 @@ app.use(express.static('public'));
 app.get('/getNominations', (req, res) => {
     var oscars = getOscars();
     var filter = filterNominations(oscars, req.query);
-    console.log(filter.length);
     res.json(filter);
 });
 
@@ -37,7 +36,6 @@ app.get('/client.js', function (req, res) {
 });
 
 function filterNominations(data, query) {
-    console.log(query);
     const category = query.category;
     const year = query.year;
     const info = query.info;
