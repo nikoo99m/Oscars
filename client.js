@@ -11,7 +11,7 @@ function getNominations() {
 
     const baseURL = 'http://localhost:8080/getNominations';
 
-    var queryParams = getQueryParameters();
+    var queryParams = getNominationsQueryParameters();
 
     const queryString = Object.keys(queryParams)
         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
@@ -76,12 +76,12 @@ function getQueryParametersMode2() {
 
     return queryParams;
 }
-function getQueryParameters() {
+function getNominationsQueryParameters() {
     const nomInfo = document.getElementById('nomInfo');
     if (nomInfo.value === undefined || nomInfo.value == '') {
-        return getQueryParametersMode1(); // Input is empty
+        return getQueryParametersMode1(); // 'Nominee or Info' is empty
     } else {
-        return getQueryParametersMode2(); // Input is not empty
+        return getQueryParametersMode2(); // 'Nominee or Info' is not empty
     }
 }
 // #endregion
