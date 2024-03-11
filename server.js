@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 app.use(express.static('public'));
 
+
 app.get('/getNominations', (req, res) => {
     var oscars = getOscars();
     var filter = filterNominations(oscars, req.query);
@@ -21,7 +22,6 @@ app.get('/getNominees', (req, res) => {
 
 app.get('/', (req, res) => {
     const filePath = path.join(__dirname, 'iwt-cw.html');
-
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
             console.error('Error reading HTML file:', err);
@@ -30,6 +30,10 @@ app.get('/', (req, res) => {
         }
         res.send(data);
     });
+});
+
+app.get('/client.js', function (req, res) {
+    res.sendFile(__dirname + '/client.js');
 });
 
 function filterNominations(data, query) {
