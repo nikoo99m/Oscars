@@ -1,7 +1,11 @@
 
 // #region Get Nominations
 function getNominations() {
-    validateInput();
+    const failed = validateInput();
+    if (failed)
+        return;
+
+    document.getElementById('output').style.display = 'block';
     // Show loading animation
     document.getElementById('nominationsLoading').style.display = 'block';
     // Hide table
@@ -89,7 +93,11 @@ function getQueryParameters() {
 
 // #region Get Nominees
 function getNominees() {
-    validateInput();
+    const failed = validateInput();
+    if (failed)
+        return;
+
+    document.getElementById('output').style.display = 'block';
     // Show loading animation
     document.getElementById('nomineesLoading').style.display = 'block';
     // Hide table
@@ -227,12 +235,11 @@ function clearNomineesTable() {
 
 // #region Input Validations
 function validateInput() {
-    var s = nomInfoIsEmpty();
-    var s1 = infoIsEmpty();
-    var s2 = nomineeIsEmpty();
-
-    if (!nomInfoIsEmpty() && (!infoIsEmpty() || !nomineeIsEmpty()))
+    if (!nomInfoIsEmpty() && (!infoIsEmpty() || !nomineeIsEmpty())) {
         alert('Clear \'Info\' and \'Nominee\' fields if using \'Nominee or Info\'!');
+        return true;
+    }
+    return false;
 }
 
 function nomInfoIsEmpty() {

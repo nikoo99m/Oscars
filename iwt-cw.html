@@ -62,50 +62,51 @@
         <button type="button" id="clear-output" class="btn btn-danger" onclick="clearOutput()">Clear Output</button>
     </form>
 
-    <div class="table-container">
-        <h2>Nominations</h2>
-        <div id="nominationsLoading" class="text-center" style="display: none;">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+    <div id="output" style="display: none;">
+        <div class="table-container">
+            <h2>Nominations</h2>
+            <div id="nominationsLoading" class="text-center" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div>Loading nominations...</div>
             </div>
-            <div>Loading nominations...</div>
+            <div class="mb-3">Results Count: <span id="nominationsCount"></span></div>
+            <table id="nomineesTable" class="table table-striped" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Category</th>
+                        <th>Nominee</th>
+                        <th>Info</th>
+                        <th>Won?</th>
+                    </tr>
+                </thead>
+                <tbody id="nomineesBody">
+                </tbody>
+            </table>
         </div>
-        <div class="mb-3">Results Count: <span id="nominationsCount"></span></div>
-        <table id="nomineesTable" class="table table-striped" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Category</th>
-                    <th>Nominee</th>
-                    <th>Info</th>
-                    <th>Won?</th>
-                </tr>
-            </thead>
-            <tbody id="nomineesBody">
-            </tbody>
-        </table>
-    </div>
-    <div class="table-container">
-        <h2>Nominee Counts</h2>
-        <div id="nomineesLoading" class="text-center" style="display: none;">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
+        <div class="table-container">
+            <h2>Nominee Counts</h2>
+            <div id="nomineesLoading" class="text-center" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <div>Loading nominees...</div>
             </div>
-            <div>Loading nominees...</div>
+            <div class="mb-3">Results Count: <span id="nomineesCount"></span></div>
+            <table id="nomineeTable" class="table table-striped" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Nominee</th>
+                        <th>Number of times</th>
+                    </tr>
+                </thead>
+                <tbody id="nomineeBody">
+                </tbody>
+            </table>
         </div>
-        <div class="mb-3">Results Count: <span id="nomineesCount"></span></div>
-        <table id="nomineeTable" class="table table-striped" style="display: none;">
-            <thead>
-                <tr>
-                    <th>Nominee</th>
-                    <th>Number of times</th>
-                </tr>
-            </thead>
-            <tbody id="nomineeBody">
-            </tbody>
-        </table>
     </div>
-    <div id="output"></div>
 </body>
 
 </html>
