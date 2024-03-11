@@ -16,14 +16,13 @@ function getNominations() {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            // console.log(response.json())
             return response.json(); // Assuming response is JSON
         })
         .then(data => {
             // Handle response data
             clearNominationsTable();
             buildNominationsTable(data);
-            console.log(data);
+            document.getElementById('nominationsCount').innerHTML = data.length;
         })
         .catch(error => {
             // Handle errors
@@ -67,12 +66,9 @@ function getQueryParametersMode2() {
 
 function getQueryParameters() {
     const nomInfo = document.getElementById('nomInfo');
-    console.log(nomInfo);
     if (nomInfo.value === undefined || nomInfo.value == '') {
-        console.log("zone 1");
         return getQueryParametersMode1(); // Input is empty
     } else {
-        console.log("zone 2");
         return getQueryParametersMode2(); // Input is not empty
     }
 }
@@ -82,13 +78,7 @@ function getNominees() {
 
     const baseURL = 'http://localhost:8080/getNominees';
 
-    const inputElement = document.getElementById('year').value;
-
-
-    const queryParams = {
-        year: inputElement
-    };
-
+    var queryParams = getNomineesParameters();
     const queryString = Object.keys(queryParams)
         .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
         .join('&');
@@ -100,19 +90,37 @@ function getNominees() {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
-            // console.log(response.json())
             return response.json(); // Assuming response is JSON
         })
         .then(data => {
             // Handle response data
             clearNomineesTable();
             buildNomineesTable(data);
-            console.log(data);
+            document.getElementById('nomineesCount').innerHTML = data.length;
         })
         .catch(error => {
             // Handle errors
             console.error('There was a problem with the fetch operation:', error);
         });
+}
+
+function getNomineesParameters() {
+    const wonInfo = document.getElementById('won').value;
+    const winCountInfo = document.getElementById('times');
+
+    if (winCountInfo === undefined || winCountInfo.value.trim() == '') {
+        return {
+            won: wonInfo,
+        };
+    }
+    else {
+        return {
+            won: wonInfo,
+            winCount: winCountInfo.value
+        };
+    }
+
+
 }
 
 function buildNominationsTable(data) {
