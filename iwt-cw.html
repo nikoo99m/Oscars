@@ -1,102 +1,77 @@
+<html>
+
 <head>
+    <title>Oscars!</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        } */
-        .outer {
-            /* border: 1px solid black; */
-            padding: 10px;
-            display: inline-block;
-        }
-
-        .inner {
-            /* border: 1px solid red; */
-            padding: 5px;
-            display: inline-block;
-        }
-
-        #nomineesTable td:nth-child(3) {
-            text-align: center;
-        }
-
         .table-container {
             width: 49%;
             display: inline-block;
             vertical-align: top;
-            /* Align tables to the top */
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
         }
     </style>
-    <title>Oscars!</title>
     <script type="text/javascript" src="client.js"></script>
 </head>
 
-
-<body>
+<body class="container">
     <form id="awardForm">
-        <label>Year:</label>
-        <input type="text" id="year" name="year"><br><br>
+        <div class="mb-3">
+            <label for="year" class="form-label">Year:</label>
+            <input type="text" id="year" name="year" class="form-control">
+        </div>
 
-        <label>Category:</label>
-        <input type="text" id="category" name="category"><br><br>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category:</label>
+            <input type="text" id="category" name="category" class="form-control">
+        </div>
 
-        <label>Nominee:</label>
-        <input type="text" id="nominee" name="nominee"><br><br>
+        <div class="mb-3">
+            <label for="nominee" class="form-label">Nominee:</label>
+            <input type="text" id="nominee" name="nominee" class="form-control">
+        </div>
 
-        <label>Info:</label>
-        <input type="text" id="info" name="info"><br><br>
+        <div class="mb-3">
+            <label for="info" class="form-label">Info:</label>
+            <input type="text" id="info" name="info" class="form-control">
+        </div>
 
-        <label>Nominee or Info:</label>
-        <input type="text" id="nomInfo" name="nomInfo"><br><br>
+        <div class="mb-3">
+            <label for="nomInfo" class="form-label">Nominee or Info:</label>
+            <input type="text" id="nomInfo" name="nomInfo" class="form-control">
+        </div>
 
-        <label>Number of Times:</label>
-        <input type="text" id="times" name="times"><br><br>
+        <div class="mb-3">
+            <label for="times" class="form-label">Number of Times:</label>
+            <input type="text" id="times" name="times" class="form-control">
+        </div>
 
-        <label>Win Status:</label>
-        <select id="won" name="won">
-            <option value="both">Both</option>
-            <option value="yes">Won</option>
-            <option value="no">Did Not Win</option>
-        </select><br><br>
+        <div class="mb-3">
+            <label for="won" class="form-label">Win Status:</label>
+            <select id="won" name="won" class="form-select">
+                <option value="">Both</option>
+                <option value="yes">Won</option>
+                <option value="no">Did Not Win</option>
+            </select>
+        </div>
 
-        <button type="button" id="get-nominations" onclick="getNominations()">Get Nominations</button><br><br>
-        <button type="button" id="get-nominees" onclick="getNominees()">Get Nominees</button><br><br>
-        <button type="button" id="clear-input" onclick="clearInputs()">Clear Input</button><br><br>
-        <button type="button" id="clear-output" onclick="clearOutput()">Clear Output</button><br><br>
+        <button type="button" id="get-nominations" class="btn btn-primary" onclick="getNominations()">Get
+            Nominations</button>
+        <button type="button" id="get-nominees" class="btn btn-primary" onclick="getNominees()">Get Nominees</button>
+        <button type="button" id="clear-input" class="btn btn-danger" onclick="clearInputs()">Clear Input</button>
+        <button type="button" id="clear-output" class="btn btn-danger" onclick="clearOutput()">Clear Output</button>
     </form>
 
     <div class="table-container">
         <h2>Nominations</h2>
-        <div class="outer">Results Count:<div class="inner" id="nominationsCount"></div>
+        <div id="nominationsLoading" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div>Loading nominations...</div>
         </div>
-        <table id="nomineesTable">
+        <div class="mb-3">Results Count: <span id="nominationsCount"></span></div>
+        <table id="nomineesTable" class="table table-striped" style="display: none;">
             <thead>
                 <tr>
                     <th>Year</th>
@@ -112,9 +87,14 @@
     </div>
     <div class="table-container">
         <h2>Nominee Counts</h2>
-        <div class="outer">Results Count:<div class="inner" id="nomineesCount"></div>
+        <div id="nomineesLoading" class="text-center" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div>Loading nominees...</div>
         </div>
-        <table id="nomineeTable">
+        <div class="mb-3">Results Count: <span id="nomineesCount"></span></div>
+        <table id="nomineeTable" class="table table-striped" style="display: none;">
             <thead>
                 <tr>
                     <th>Nominee</th>
@@ -125,8 +105,7 @@
             </tbody>
         </table>
     </div>
+    <div id="output"></div>
 </body>
 
-<div id="output"></div>
-
-<html>
+</html>
