@@ -6,12 +6,9 @@ function getNominations() {
         return;
 
     document.getElementById('output').style.display = 'block';
-    // Show loading animation
     document.getElementById('nominationsLoading').style.display = 'block';
-    // Hide table
     document.getElementById('nomineesTable').style.display = 'none';
 
-    console.log("Getting Nominations:");
     const baseURL = 'http://localhost:8080/getNominations';
 
     var queryParams = getQueryParameters();
@@ -21,7 +18,6 @@ function getNominations() {
         .join('&');
 
     const url = `${baseURL}?${queryString}`;
-    console.log(url);
 
     fetch(url)
         .then(response => {
@@ -98,11 +94,8 @@ function getNominees() {
         return;
 
     document.getElementById('output').style.display = 'block';
-    // Show loading animation
     document.getElementById('nomineesLoading').style.display = 'block';
-    // Hide table
     document.getElementById('nomineeTable').style.display = 'none';
-    console.log("Getting Nominees.");
 
     const baseURL = 'http://localhost:8080/getNominees';
 
@@ -112,7 +105,6 @@ function getNominees() {
         .join('&');
 
     const url = `${baseURL}?${queryString}`;
-    console.log(url);
     fetch(url)
         .then(response => {
             if (!response.ok) {
@@ -254,8 +246,5 @@ function nomineeIsEmpty() {
     const nominee = document.getElementById('nominee');
     return nominee.value == undefined || nominee.value.trim() == "";
 }
-// #endregion
-
-// #region Get Nominees
 // #endregion
 
