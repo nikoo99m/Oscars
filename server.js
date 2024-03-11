@@ -6,22 +6,15 @@ const path = require('path');
 app.use(express.static('public'));
 
 app.get('/getNominations', (req, res) => {
-    var oscars = getOscars(res);
+    var oscars = getOscars();
     var filter = filterNominations(oscars, req.query);
-    // console.log(year);
     console.log(filter.length);
     res.json(filter);
 });
 
-app.get('/getNominations2', (request, response) => {
-    const word = request.query.word;
-    response.send('<p>' + word + '</p>');
-});
-
-
 app.get('/getNominees', (req, res) => {
     var oscars = getOscars();
-    var nominees = getNomineeWinCounts(oscars);
+    var nominees = getNomineeWinCounts(oscars, req.query);
     res.json(nominees);
     return;
 });
@@ -48,11 +41,7 @@ function filterNominations(data, query) {
     const nomInfo = query.nomInfo;
     const won = query.won;
 
-
-    // data.forEach(entry => console.log(entry));
     if (nomInfo === undefined || nomInfo.value === '') {
-        console.log("zone 1");
-        console.log(nomInfo);
         return data.filter(x => x.Year.includes(year) &&
             x.Category.includes(category) &&
             x.Nominee.includes(nominee) &&
@@ -60,8 +49,6 @@ function filterNominations(data, query) {
             ((won == 'both') || (won != 'both' && x.Won.includes(won))));
     }
     else {
-        console.log("zone 2");
-        console.log(nomInfo);
         return data.filter(x => x.Year.includes(year) &&
             x.Category.includes(category) &&
             (x.Nominee.includes(nomInfo) ||
@@ -74,13 +61,17 @@ function getOscars() {
     const filePath = path.join(__dirname, 'oscars.json');
     const data = fs.readFileSync(filePath, 'utf8');
     const jsonData = JSON.parse(data);
-    // Return the parsed JSON data
     return jsonData;
 }
-function getNomineeWinCounts(data) {
-    const nomineeWins = {};
 
-    data.filter(entry => entry.Category.includes("Actor") || entry.Category.includes("Actress"))
+function getNomineeWinCounts(data, query) {
+    const nomineeWins = {};
+    const won = query.won;
+    const winCount = query.winCount;
+
+    data.filter(entry => (entry.Category.includes("Actor") ||
+        entry.Category.includes("Actress")) &&
+        ((won == 'both') || (won != 'both' && entry.Won.includes(won))))
         .forEach(entry => {
             const nominee = entry.Nominee;
             const won = entry.Won;
@@ -89,12 +80,19 @@ function getNomineeWinCounts(data) {
                 nomineeWins[nominee] = 0;
             }
 
-            // if (won === "yes") {
             nomineeWins[nominee]++;
-            // }
         });
 
-    const sortedNominees = Object.entries(nomineeWins)
+    var filteredNomineeWins = null;
+    if (winCount !== undefined) {
+        filteredNomineeWins = Object.fromEntries(Object.entries(nomineeWins)
+            .filter(([key, value]) => value == winCount));
+    }
+    else {
+        filteredNomineeWins = nomineeWins;
+    }
+
+    const sortedNominees = Object.entries(filteredNomineeWins)
         .map(([nominee, wins]) => ({ nominee, wins }))
         .sort((a, b) => b.wins - a.wins);
 
