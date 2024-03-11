@@ -1,4 +1,12 @@
+
+// #region Get Nominations
 function getNominations() {
+    validateInput();
+    // Show loading animation
+    document.getElementById('nominationsLoading').style.display = 'block';
+    // Hide table
+    document.getElementById('nomineesTable').style.display = 'none';
+
     console.log("Getting Nominations:");
     const baseURL = 'http://localhost:8080/getNominations';
 
@@ -23,13 +31,19 @@ function getNominations() {
             clearNominationsTable();
             buildNominationsTable(data);
             document.getElementById('nominationsCount').innerHTML = data.length;
+
+            document.getElementById('nominationsLoading').style.display = 'none';
+            // Show table
+            document.getElementById('nomineesTable').style.display = 'table';
         })
         .catch(error => {
             // Handle errors
             console.error('There was a problem with the fetch operation:', error);
+            document.getElementById('nominationsLoading').style.display = 'none';
+            // Show error message
+            document.getElementById('nomineesTable').innerHTML = '<tr><td colspan="5">Error fetching data. Please try again later.</td></tr>';
         });
 }
-
 function getQueryParametersMode1() {
     const yearInput = document.getElementById('year').value;
     const infoInput = document.getElementById('info').value;
@@ -47,7 +61,6 @@ function getQueryParametersMode1() {
 
     return queryParams;
 }
-
 function getQueryParametersMode2() {
     const yearInput = document.getElementById('year').value;
     const categoryInput = document.getElementById('category').value;
@@ -63,7 +76,6 @@ function getQueryParametersMode2() {
 
     return queryParams;
 }
-
 function getQueryParameters() {
     const nomInfo = document.getElementById('nomInfo');
     if (nomInfo.value === undefined || nomInfo.value == '') {
@@ -72,8 +84,16 @@ function getQueryParameters() {
         return getQueryParametersMode2(); // Input is not empty
     }
 }
+// #endregion
 
+
+// #region Get Nominees
 function getNominees() {
+    validateInput();
+    // Show loading animation
+    document.getElementById('nomineesLoading').style.display = 'block';
+    // Hide table
+    document.getElementById('nomineeTable').style.display = 'none';
     console.log("Getting Nominees.");
 
     const baseURL = 'http://localhost:8080/getNominees';
@@ -97,13 +117,17 @@ function getNominees() {
             clearNomineesTable();
             buildNomineesTable(data);
             document.getElementById('nomineesCount').innerHTML = data.length;
+            document.getElementById('nomineesLoading').style.display = 'none';
+            document.getElementById('nomineeTable').style.display = 'table';
         })
         .catch(error => {
             // Handle errors
             console.error('There was a problem with the fetch operation:', error);
+            document.getElementById('nomineesLoading').style.display = 'none';
+            // Show error message
+            document.getElementById('nomineeTable').innerHTML = '<tr><td colspan="5">Error fetching data. Please try again later.</td></tr>';
         });
 }
-
 function getNomineesParameters() {
     const wonInfo = document.getElementById('won').value;
     const winCountInfo = document.getElementById('times');
@@ -122,7 +146,6 @@ function getNomineesParameters() {
 
 
 }
-
 function buildNominationsTable(data) {
     const tableBody = document.getElementById('nomineesBody');
 
@@ -138,7 +161,6 @@ function buildNominationsTable(data) {
         tableBody.appendChild(row);
     });
 }
-
 function buildNomineesTable(data) {
     const tableBody = document.getElementById('nomineeBody');
 
@@ -154,32 +176,10 @@ function buildNomineesTable(data) {
         tableBody.appendChild(row);
     });
 }
+// #endregion
 
-function clearOutput() {
-    clearNominationsTable();
-    clearNomineesTable();
-}
 
-function clearNominationsTable() {
-    // Get the table body element
-    const nomineesTableBody = document.getElementById('nomineesBody');
-
-    // Remove all child nodes (rows) from the table body
-    while (nomineesTableBody.firstChild) {
-        nomineesTableBody.removeChild(nomineesTableBody.firstChild);
-    }
-}
-
-function clearNomineesTable() {
-    // Get the table body element
-    const nomineesTableBody = document.getElementById('nomineeBody');
-
-    // Remove all child nodes (rows) from the table body
-    while (nomineesTableBody.firstChild) {
-        nomineesTableBody.removeChild(nomineesTableBody.firstChild);
-    }
-}
-
+// #region Clear Controls
 function clearInputs() {
     // Array of input IDs to clear
     const inputIds = ['year', 'category', 'nominee', 'info', 'nomInfo', 'times'];
@@ -201,3 +201,54 @@ function clearInputs() {
         selectElement.value = ''; // Set the value to an empty string
     }
 }
+function clearOutput() {
+    clearNominationsTable();
+    clearNomineesTable();
+}
+function clearNominationsTable() {
+    // Get the table body element
+    const nomineesTableBody = document.getElementById('nomineesBody');
+
+    // Remove all child nodes (rows) from the table body
+    while (nomineesTableBody.firstChild) {
+        nomineesTableBody.removeChild(nomineesTableBody.firstChild);
+    }
+}
+function clearNomineesTable() {
+    // Get the table body element
+    const nomineesTableBody = document.getElementById('nomineeBody');
+
+    // Remove all child nodes (rows) from the table body
+    while (nomineesTableBody.firstChild) {
+        nomineesTableBody.removeChild(nomineesTableBody.firstChild);
+    }
+}
+// #endregion
+
+// #region Input Validations
+function validateInput() {
+    var s = nomInfoIsEmpty();
+    var s1 = infoIsEmpty();
+    var s2 = nomineeIsEmpty();
+
+    if (!nomInfoIsEmpty() && (!infoIsEmpty() || !nomineeIsEmpty()))
+        alert('Clear \'Info\' and \'Nominee\' fields if using \'Nominee or Info\'!');
+}
+
+function nomInfoIsEmpty() {
+    const nomInfo = document.getElementById('nomInfo');
+    return nomInfo.value == undefined || nomInfo.value.trim() == "";
+}
+function infoIsEmpty() {
+    const info = document.getElementById('info');
+    return info.value == undefined || info.value.trim() == "";
+}
+function nomineeIsEmpty() {
+    const nominee = document.getElementById('nominee');
+    return nominee.value == undefined || nominee.value.trim() == "";
+}
+// #endregion
+
+// #region Get Nominees
+// #endregion
+
