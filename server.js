@@ -1,10 +1,12 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = 8080;
 const fs = require('fs');
 const path = require('path');
 app.use(express.static('public'));
-
+// Allow requests from any origin
+app.use(cors());
 
 app.get('/getNominations', (req, res) => {
     var oscars = getOscars();
