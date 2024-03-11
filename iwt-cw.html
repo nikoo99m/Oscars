@@ -15,6 +15,17 @@
         th {
             background-color: #f2f2f2;
         } */
+        .outer {
+            /* border: 1px solid black; */
+            padding: 10px;
+            display: inline-block;
+        }
+
+        .inner {
+            /* border: 1px solid red; */
+            padding: 5px;
+            display: inline-block;
+        }
 
         #nomineesTable td:nth-child(3) {
             text-align: center;
@@ -83,6 +94,8 @@
 
     <div class="table-container">
         <h2>Nominations</h2>
+        <div class="outer">Results Count:<div class="inner" id="nominationsCount"></div>
+        </div>
         <table id="nomineesTable">
             <thead>
                 <tr>
@@ -99,6 +112,8 @@
     </div>
     <div class="table-container">
         <h2>Nominee Counts</h2>
+        <div class="outer">Results Count:<div class="inner" id="nomineesCount"></div>
+        </div>
         <table id="nomineeTable">
             <thead>
                 <tr>
