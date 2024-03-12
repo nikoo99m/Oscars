@@ -1,3 +1,9 @@
+// This is a Node.js Express server script that serves HTML and JavaScript files for an Oscars nominations and nominee counts application.
+// It defines routes for retrieving nominations and nominee counts based on query parameters, as well as serving static files.
+// The server also handles CORS to allow requests from any origin.
+// The main functionalities include filtering nominations based on search criteria and calculating nominee win counts.
+
+
 const express = require('express');
 const cors = require('cors');
 const app = express();

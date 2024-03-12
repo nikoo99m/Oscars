@@ -1,6 +1,10 @@
 
 // #region Get Nominations
+/**
+ * Fetches nominations data based on user input and updates the nominations table accordingly.
+ */
 function getNominations() {
+    // Validate input fields
     const failed = validateInput();
     if (failed)
         return;
@@ -146,6 +150,9 @@ function getNomineesParameters() {
 
 
 }
+/**
+ * Building the nominations table using the provided data.
+ */
 function buildNominationsTable(data) {
     const tableBody = document.getElementById('nomineesBody');
 
@@ -161,6 +168,9 @@ function buildNominationsTable(data) {
         tableBody.appendChild(row);
     });
 }
+/**
+ * Building the nominees table using the provided data.
+ */
 function buildNomineesTable(data) {
     const tableBody = document.getElementById('nomineeBody');
 
@@ -226,6 +236,10 @@ function clearNomineesTable() {
 // #endregion
 
 // #region Input Validations
+/**
+ * Validates input fields to ensure consistency and prevent conflicting entries.
+ * @returns boolean True if validation failed, false otherwise.
+ */
 function validateInput() {
     if (!nomInfoIsEmpty() && (!infoIsEmpty() || !nomineeIsEmpty())) {
         alert('Clear \'Info\' and \'Nominee\' fields if using \'Nominee or Info\'!');
