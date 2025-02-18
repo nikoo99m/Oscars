@@ -1,5 +1,7 @@
 
-const API_BASE_URL = window.location.origin;
+const BASE_URL = window.location.origin.includes("localhost")
+    ? "http://localhost:8080"
+    : "https://oscars-beige.vercel.app";
 
 // #region Get Nominations
 /**
