@@ -7,11 +7,10 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = 8080;
+const port = process.env.PORT || 8080;
 const fs = require('fs');
 const path = require('path');
 app.use(express.static('public'));
-// Allow requests from any origin
 app.use(cors());
 
 app.get('/getNominations', (req, res) => {
@@ -68,11 +67,21 @@ function filterNominations(data, query) {
 }
 
 function getOscars() {
-    const filePath = path.join(__dirname, 'oscars.json');
-    const data = fs.readFileSync(filePath, 'utf8');
-    const jsonData = JSON.parse(data);
-    return jsonData;
+    try {
+        // Use process.cwd() for Vercel compatibility
+        const filePath = path.join(process.cwd(), 'oscars.json');
+
+        // Read file synchronously
+        const data = fs.readFileSync(filePath, 'utf8');
+
+        // Parse and return JSON data
+        return JSON.parse(data);
+    } catch (error) {
+        console.error("Error loading Oscars data:", error);
+        return [];  // Return empty array if there's an error
+    }
 }
+
 
 function getNomineeWinCounts(data, query) {
     const nomineeWins = {};

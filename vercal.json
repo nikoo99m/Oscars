@@ -1,0 +1,13 @@
+{
+    "rewrites": [
+        {
+            "source": "/",
+            "destination": "/iwt-cw.html"
+        }
+    ],
+    "functions": {
+        "api/index.js": {
+            "runtime": "nodejs16.x"
+        }
+    }
+}
