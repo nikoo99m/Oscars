@@ -1,4 +1,3 @@
-// Oscars API Server for Vercel
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -6,6 +5,7 @@ const path = require('path');
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 
 // Ensure Vercel detects API routes
 const router = express.Router();
