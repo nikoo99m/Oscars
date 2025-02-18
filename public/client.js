@@ -1,5 +1,5 @@
-// Base URL for deployed API on Vercel
-const BASE_URL = "https://oscars-beige.vercel.app/api";
+
+const API_BASE_URL = window.location.origin;
 
 // #region Get Nominations
 /**

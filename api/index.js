@@ -7,9 +7,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Ensure Vercel detects API routes
-const router = express.Router();
-
 /**
  * Reads the Oscars data from the JSON file
  */
@@ -28,8 +25,8 @@ function getOscars() {
     }
 }
 
-// #region Get Nominations
-router.get('/getNominations', (req, res) => {
+// API Route: Get Nominations
+app.get('/api/getNominations', (req, res) => {
     try {
         console.log("Fetching nominations...");
         const oscars = getOscars();
@@ -40,8 +37,8 @@ router.get('/getNominations', (req, res) => {
     }
 });
 
-// #region Get Nominees
-router.get('/getNominees', (req, res) => {
+// API Route: Get Nominees
+app.get('/api/getNominees', (req, res) => {
     try {
         console.log("Fetching nominees...");
         const oscars = getOscars();
@@ -52,6 +49,13 @@ router.get('/getNominees', (req, res) => {
     }
 });
 
-app.use('/api', router); // Ensures API routes are prefixed with /api
+// Start the Express server locally
+if (process.env.NODE_ENV !== 'production') {
+    const port = process.env.PORT || 8080;
+    app.listen(port, () => {
+        console.log(`Server running on port ${port}`);
+    });
+}
 
-module.exports = app; // Required for Vercel
+// Export the app for Vercel
+module.exports = app;
