@@ -13,7 +13,7 @@ function getNominations() {
     document.getElementById('nominationsLoading').style.display = 'block';
     document.getElementById('nomineesTable').style.display = 'none';
 
-    const baseURL = 'http://localhost:8080/getNominations';
+    const baseURL = 'https://oscars-beige.vercel.app/api';
 
     var queryParams = getNominationsQueryParameters();
 
