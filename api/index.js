@@ -12,8 +12,8 @@ app.use(express.json());
  */
 function getOscars() {
     try {
-        const filePath = path.join(__dirname, '../oscars.json');
-        // Ensure file exists
+        const filePath = path.join(__dirname, 'oscars.json');
+        console.log("Looking for file at:", filePath);
         if (!fs.existsSync(filePath)) {
             console.error("Error: oscars.json not found");
             return [];
@@ -26,31 +26,66 @@ function getOscars() {
     }
 }
 
-// API Route: Get Nominations
-app.get('/api/getNominations', (req, res) => {
+/**
+ * Filters nominations based on query parameters
+ */
+function filterNominations(data, query) {
+    return data.filter(entry => {
+        return (!query.year || entry.Year.includes(query.year)) &&
+            (!query.category || entry.Category.includes(query.category)) &&
+            (!query.nominee || entry.Nominee.includes(query.nominee)) &&
+            (!query.info || entry.Info.includes(query.info)) &&
+            (!query.won || entry.Won.includes(query.won));
+    });
+}
+
+/**
+ * Counts wins per nominee based on query parameters
+ */
+function getNomineeWinCounts(data, query) {
+    const nomineeWins = {};
+
+    data.forEach(entry => {
+        if ((query.won === 'both' || entry.Won === query.won) &&
+            (query.category ? entry.Category.includes(query.category) : true)) {
+
+            const nominee = entry.Nominee;
+            nomineeWins[nominee] = (nomineeWins[nominee] || 0) + 1;
+        }
+    });
+
+    return Object.entries(nomineeWins)
+        .map(([nominee, wins]) => ({ nominee, wins }))
+        .sort((a, b) => b.wins - a.wins);
+}
+
+// API Route: Get Nominations with Filters
+app.get('/getNominations', (req, res) => {
     try {
-        console.log("Fetching nominations...");
+        console.log("Fetching nominations with filters:", req.query);
         const oscars = getOscars();
-        res.json(oscars);
+        const filteredData = filterNominations(oscars, req.query);
+        res.json(filteredData);
     } catch (error) {
         console.error("Error fetching nominations:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-// API Route: Get Nominees
-app.get('/api/getNominees', (req, res) => {
+// API Route: Get Nominees with Win Counts
+app.get('/getNominees', (req, res) => {
     try {
-        console.log("Fetching nominees...");
+        console.log("Fetching nominees with filters:", req.query);
         const oscars = getOscars();
-        res.json(oscars);
+        const nomineeCounts = getNomineeWinCounts(oscars, req.query);
+        res.json(nomineeCounts);
     } catch (error) {
         console.error("Error fetching nominees:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-// Start the Express server locally
+// Start the server only in development
 if (process.env.NODE_ENV !== 'production') {
     const port = process.env.PORT || 8080;
     app.listen(port, () => {

@@ -1,211 +1,202 @@
-
 const BASE_URL = window.location.origin.includes('localhost')
     ? 'http://localhost:8080/api'
     : 'https://oscars-beige.vercel.app/api';
-
 
 // #region Get Nominations
 /**
  * Fetches nominations data based on user input and updates the nominations table accordingly.
  */
 function getNominations() {
-    // Validate input fields
     if (validateInput()) return;
 
-    document.getElementById('output').style.display = 'block';
-    document.getElementById('nominationsLoading').style.display = 'block';
-    document.getElementById('nomineesTable').style.display = 'none';
+    toggleLoading(true, 'nominations');
 
-    // Get query parameters
-    var queryParams = getNominationsQueryParameters();
-    const queryString = Object.keys(queryParams)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
-        .join('&');
-
-    // Correct API URL
+    const queryParams = getNominationsQueryParameters();
+    const queryString = new URLSearchParams(queryParams).toString();
     const url = `${BASE_URL}/getNominations?${queryString}`;
 
-    fetch(`${BASE_URL}/getNominations`)
+    fetch(url)
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         })
         .then(data => {
-            clearNominationsTable();
-            buildNominationsTable(data);
-            document.getElementById('nominationsCount').innerHTML = data.length;
-
-            document.getElementById('nominationsLoading').style.display = 'none';
-            document.getElementById('nomineesTable').style.display = 'table';
+            clearTable('nomineesBody');
+            buildTable('nomineesBody', data);
+            document.getElementById('nominationsCount').textContent = data.length;
+            toggleLoading(false, 'nominations');
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            document.getElementById('nominationsLoading').style.display = 'none';
-            document.getElementById('nomineesTable').innerHTML =
-                '<tr><td colspan="5">Error fetching data. Please try again later.</td></tr>';
+            displayFetchError('nomineesBody');
+            toggleLoading(false, 'nominations');
         });
 }
 
+/**
+ * Constructs query parameters for nominations based on user input.
+ */
 function getNominationsQueryParameters() {
-    const nomInfo = document.getElementById('nomInfo');
-    if (nomInfo.value === undefined || nomInfo.value == '') {
-        return getQueryParametersMode1(); // 'Nominee or Info' is empty
-    } else {
-        return getQueryParametersMode2(); // 'Nominee or Info' is not empty
-    }
+    return document.getElementById('nomInfo').value.trim()
+        ? getQueryParametersMode2()
+        : getQueryParametersMode1();
 }
 
 function getQueryParametersMode1() {
     return {
-        year: document.getElementById('year').value,
-        info: document.getElementById('info').value,
-        nominee: document.getElementById('nominee').value,
-        category: document.getElementById('category').value,
-        won: document.getElementById('won').value
+        year: getValue('year'),
+        info: getValue('info'),
+        nominee: getValue('nominee'),
+        category: getValue('category'),
+        won: getValue('won')
     };
 }
 
 function getQueryParametersMode2() {
     return {
-        year: document.getElementById('year').value,
-        nomInfo: document.getElementById('nomInfo').value,
-        category: document.getElementById('category').value,
-        won: document.getElementById('won').value
+        year: getValue('year'),
+        nomInfo: getValue('nomInfo'),
+        category: getValue('category'),
+        won: getValue('won')
     };
 }
 // #endregion
 
 // #region Get Nominees
+/**
+ * Fetches nominee win counts and updates the nominees table.
+ */
 function getNominees() {
     if (validateInput()) return;
 
-    document.getElementById('output').style.display = 'block';
-    document.getElementById('nomineesLoading').style.display = 'block';
-    document.getElementById('nomineeTable').style.display = 'none';
+    toggleLoading(true, 'nominees');
 
-    var queryParams = getNomineesParameters();
-    const queryString = Object.keys(queryParams)
-        .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(queryParams[key])}`)
-        .join('&');
-
-    // ✅ Correct API URL
+    const queryParams = getNomineesParameters();
+    const queryString = new URLSearchParams(queryParams).toString();
     const url = `${BASE_URL}/getNominees?${queryString}`;
 
-    fetch(`${BASE_URL}/getNominees`)
-
+    fetch(url)
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
         })
         .then(data => {
-            clearNomineesTable();
-            buildNomineesTable(data);
-            document.getElementById('nomineesCount').innerHTML = data.length;
-            document.getElementById('nomineesLoading').style.display = 'none';
-            document.getElementById('nomineeTable').style.display = 'table';
+            clearTable('nomineeBody');
+            buildTable('nomineeBody', data);
+            document.getElementById('nomineesCount').textContent = data.length;
+            toggleLoading(false, 'nominees');
         })
         .catch(error => {
             console.error('Fetch error:', error);
-            document.getElementById('nomineesLoading').style.display = 'none';
-            document.getElementById('nomineeTable').innerHTML =
-                '<tr><td colspan="5">Error fetching data. Please try again later.</td></tr>';
+            displayFetchError('nomineeBody');
+            toggleLoading(false, 'nominees');
         });
 }
 
+/**
+ * Constructs query parameters for nominee counts based on user input.
+ */
 function getNomineesParameters() {
-    const wonInfo = document.getElementById('won').value;
-    const winCountInfo = document.getElementById('times');
-
-    return winCountInfo === undefined || winCountInfo.value.trim() == ''
-        ? { won: wonInfo }
-        : { won: wonInfo, winCount: winCountInfo.value };
+    return getValue('times')
+        ? { won: getValue('won'), winCount: getValue('times') }
+        : { won: getValue('won') };
 }
 // #endregion
 
-// #region Build Tables
-function buildNominationsTable(data) {
-    const tableBody = document.getElementById('nomineesBody');
-    if (!tableBody) return; // Prevent errors
+// #region Table Handling
+/**
+ * Builds a table dynamically with provided data.
+ */
+function buildTable(tableBodyId, data) {
+    const tableBody = document.getElementById(tableBodyId);
+    if (!tableBody) return console.error(`Error: Element '${tableBodyId}' not found!`);
 
-    tableBody.innerHTML = ""; // Clears previous content
     data.forEach(entry => {
         const row = document.createElement('tr');
-        for (const key in entry) {
+        Object.values(entry).forEach(value => {
             const cell = document.createElement('td');
-            cell.textContent = entry[key];
+            cell.textContent = value;
             row.appendChild(cell);
-        }
+        });
         tableBody.appendChild(row);
     });
 }
 
-function buildNomineesTable(data) {
-    const tableBody = document.getElementById('nomineeBody');
-    if (!tableBody) return; // Prevent errors
-
-    tableBody.innerHTML = ""; // Clears previous content
-    data.forEach(entry => {
-        const row = document.createElement('tr');
-        for (const key in entry) {
-            const cell = document.createElement('td');
-            cell.textContent = entry[key];
-            row.appendChild(cell);
-        }
-        tableBody.appendChild(row);
-    });
+/**
+ * Clears a table by removing all its child nodes.
+ */
+function clearTable(tableBodyId) {
+    const tableBody = document.getElementById(tableBodyId);
+    if (tableBody) tableBody.innerHTML = "";
 }
 // #endregion
 
-// #region Clear Controls
+// #region Utility Functions
+/**
+ * Retrieves value from input field safely.
+ */
+function getValue(id) {
+    const element = document.getElementById(id);
+    return element ? element.value.trim() : "";
+}
+
+/**
+ * Toggles loading state for nominations or nominees.
+ */
+function toggleLoading(isLoading, type) {
+    document.getElementById(`${type}Loading`).style.display = isLoading ? 'block' : 'none';
+}
+
+/**
+ * Displays a fetch error in a table.
+ */
+function displayFetchError(tableBodyId) {
+    const tableBody = document.getElementById(tableBodyId);
+    if (tableBody) {
+        tableBody.innerHTML = '<tr><td colspan="5">Error fetching data. Please try again later.</td></tr>';
+    }
+}
+
+/**
+ * Clears all input fields and dropdown selections.
+ */
 function clearInputs() {
     ['year', 'category', 'nominee', 'info', 'nomInfo', 'times'].forEach(id => {
-        const inputElement = document.getElementById(id);
-        if (inputElement) inputElement.value = '';
+        const input = document.getElementById(id);
+        if (input) input.value = '';
     });
 
-    const selectElement = document.getElementById('won');
-    if (selectElement) selectElement.value = '';
+    const select = document.getElementById('won');
+    if (select) select.value = '';
 }
 
 function clearOutput() {
-    clearNominationsTable();
-    clearNomineesTable();
-}
-
-function clearNominationsTable() {
-    const tableBody = document.getElementById('nomineesBody');
-    if (!tableBody) return;
-    tableBody.innerHTML = "";
-}
-
-function clearNomineesTable() {
-    const tableBody = document.getElementById('nomineeBody');
-    if (!tableBody) return;
-    tableBody.innerHTML = "";
+    clearTable('nomineesBody');
+    clearTable('nomineeBody');
 }
 // #endregion
 
 // #region Input Validations
+/**
+ * Ensures input fields are valid and do not have conflicting entries.
+ */
 function validateInput() {
     if (!nomInfoIsEmpty() && (!infoIsEmpty() || !nomineeIsEmpty())) {
-        alert('Clear \'Info\' and \'Nominee\' fields if using \'Nominee or Info\'!');
+        alert("Clear 'Info' and 'Nominee' fields if using 'Nominee or Info'!");
         return true;
     }
     return false;
 }
 
 function nomInfoIsEmpty() {
-    const nomInfo = document.getElementById('nomInfo');
-    return nomInfo.value == undefined || nomInfo.value.trim() == "";
+    return getValue('nomInfo') === "";
 }
 
 function infoIsEmpty() {
-    const info = document.getElementById('info');
-    return info.value == undefined || info.value.trim() == "";
+    return getValue('info') === "";
 }
 
 function nomineeIsEmpty() {
-    const nominee = document.getElementById('nominee');
-    return nominee.value == undefined || nominee.value.trim() == "";
+    return getValue('nominee') === "";
 }
 // #endregion
