@@ -12,7 +12,8 @@ app.use(express.json());
  */
 function getOscars() {
     try {
-        const filePath = path.join(__dirname, 'oscars.json'); // Ensure file exists
+        const filePath = path.join(__dirname, '../oscars.json');
+        // Ensure file exists
         if (!fs.existsSync(filePath)) {
             console.error("Error: oscars.json not found");
             return [];

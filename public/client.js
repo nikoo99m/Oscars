@@ -1,7 +1,8 @@
 
-const BASE_URL = window.location.origin.includes("localhost")
-    ? "http://localhost:8080"
-    : "https://oscars-beige.vercel.app";
+const BASE_URL = window.location.origin.includes('localhost')
+    ? 'http://localhost:8080/api'
+    : 'https://oscars-beige.vercel.app/api';
+
 
 // #region Get Nominations
 /**
@@ -24,7 +25,7 @@ function getNominations() {
     // Correct API URL
     const url = `${BASE_URL}/getNominations?${queryString}`;
 
-    fetch(url)
+    fetch(`${BASE_URL}/getNominations`)
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
@@ -90,7 +91,8 @@ function getNominees() {
     // ✅ Correct API URL
     const url = `${BASE_URL}/getNominees?${queryString}`;
 
-    fetch(url)
+    fetch(`${BASE_URL}/getNominees`)
+
         .then(response => {
             if (!response.ok) throw new Error('Network response was not ok');
             return response.json();
